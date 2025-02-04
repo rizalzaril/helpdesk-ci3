@@ -1,5 +1,5 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Kondisi extends CI_Controller
 {
@@ -20,18 +20,18 @@ class Kondisi extends CI_Controller
 	public function index()
 	{
 		//User harus admin, tidak boleh role user lain
-		if($this->session->userdata('level') == "Admin"){
+		if ($this->session->userdata('level') == "Admin") {
 			//Menyusun template List kondisi
 			$data['title'] 	  = "Priority";
 			$data['navbar']   = "navbar";
 			$data['sidebar']  = "sidebar";
 			$data['body']     = "kondisi/index";
 
-        	//Session
+			//Session
 			$id_dept = $this->session->userdata('id_dept');
 			$id_user = $this->session->userdata('id_user');
 
-        	//Daftar semua kondisi, get dari model_app (kondisi), data akan ditampung dalam parameter 'kondisi'
+			//Daftar semua kondisi, get dari model_app (kondisi), data akan ditampung dalam parameter 'kondisi'
 			$data['kondisi'] = $this->model_app->kondisi()->result();
 
 			//Load template
@@ -46,7 +46,10 @@ class Kondisi extends CI_Controller
 	public function tambah()
 	{
 		//Form validasi untuk nama kondisi dengan nama validasi = nama_kondisi
-		$this->form_validation->set_rules('nama_kondisi', 'Nama_kondisi', 'required|is_unique[kondisi.nama_kondisi]',
+		$this->form_validation->set_rules(
+			'nama_kondisi',
+			'Nama_kondisi',
+			'required|is_unique[kondisi.nama_kondisi]',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Priority.
@@ -58,7 +61,10 @@ class Kondisi extends CI_Controller
 		);
 
 		//Form validasi untuk waktu resolusi dengan nama validasi = waktu_respon
-		$this->form_validation->set_rules('waktu_respon', 'Waktu_respon', 'required',
+		$this->form_validation->set_rules(
+			'waktu_respon',
+			'Waktu_respon',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Time.
@@ -67,9 +73,9 @@ class Kondisi extends CI_Controller
 		);
 
 		//Kondisi jika proses tambah tidak memenuhi syarat validasi akan dikembalikan ke form tambah kondisi
-		if($this->form_validation->run() == FALSE){
+		if ($this->form_validation->run() == FALSE) {
 			//User harus admin, tidak boleh role user lain
-			if($this->session->userdata('level') == "Admin"){
+			if ($this->session->userdata('level') == "Admin") {
 				//Menyusun template List kondisi
 				$data['title'] 	  = "Priority";
 				$data['navbar']   = "navbar";
@@ -77,11 +83,11 @@ class Kondisi extends CI_Controller
 				$data['modal_show'] = "$('#modal-fade').modal('show');";
 				$data['body']     = "kondisi/index";
 
-        		//Session
+				//Session
 				$id_dept = $this->session->userdata('id_dept');
 				$id_user = $this->session->userdata('id_user');
 
-        		//Daftar semua kondisi, get dari model_app (kondisi), data akan ditampung dalam parameter 'kondisi'
+				//Daftar semua kondisi, get dari model_app (kondisi), data akan ditampung dalam parameter 'kondisi'
 				$data['kondisi'] = $this->model_app->kondisi()->result();
 
 				//Load template
@@ -126,14 +132,14 @@ class Kondisi extends CI_Controller
 	public function edit($id)
 	{
 		//User harus admin, tidak boleh role user lain
-		if($this->session->userdata('level') == "Admin"){
+		if ($this->session->userdata('level') == "Admin") {
 			//Menyusun template edit kondisi
 			$data['title'] 	  = "Edit Priority";
 			$data['navbar']   = "navbar";
 			$data['sidebar']  = "sidebar";
 			$data['body']     = "kondisi/edit";
 
-	        //Session
+			//Session
 			$id_dept = $this->session->userdata('id_dept');
 			$id_user = $this->session->userdata('id_user');
 
@@ -151,7 +157,10 @@ class Kondisi extends CI_Controller
 	public function update($id)
 	{
 		//Form validasi untuk nama kondisi dengan nama validasi = nama_kondisi
-		$this->form_validation->set_rules('nama_kondisi', 'Nama_kondisi', 'required|is_unique[kondisi.nama_kondisi]',
+		$this->form_validation->set_rules(
+			'nama_kondisi',
+			'Nama_kondisi',
+			'required|is_unique[kondisi.nama_kondisi]',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Priority.
@@ -163,7 +172,10 @@ class Kondisi extends CI_Controller
 		);
 
 		//Form validasi untuk waktu resolusi dengan nama validasi = waktu_respon
-		$this->form_validation->set_rules('waktu_respon', 'Waktu_respon', 'required',
+		$this->form_validation->set_rules(
+			'waktu_respon',
+			'Waktu_respon',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Time.
@@ -172,16 +184,16 @@ class Kondisi extends CI_Controller
 		);
 
 		//Kondisi jika proses edit tidak memenuhi syarat validasi akan dikembalikan ke form edit kondisi
-		if($this->form_validation->run() == FALSE){
+		if ($this->form_validation->run() == FALSE) {
 			//User harus admin, tidak boleh role user lain
-			if($this->session->userdata('level') == "Admin"){
+			if ($this->session->userdata('level') == "Admin") {
 				//Menyusun template edit kondisi
 				$data['title'] 	  = "Edit Priority";
 				$data['navbar']   = "navbar";
 				$data['sidebar']  = "sidebar";
 				$data['body']     = "kondisi/edit";
 
-	        	//Session
+				//Session
 				$id_dept = $this->session->userdata('id_dept');
 				$id_user = $this->session->userdata('id_user');
 
@@ -197,7 +209,7 @@ class Kondisi extends CI_Controller
 		} else {
 			//Bagian ini jika validasi dipenuhi, maka berhasil update kondisi
 			//User harus admin, tidak boleh role user lain
-			if($this->session->userdata('level') == "Admin"){
+			if ($this->session->userdata('level') == "Admin") {
 				//Data kondisi ditampung dalam bentuk array
 				$data = array(
 					'nama_kondisi' => ucfirst($this->input->post('nama_kondisi')),

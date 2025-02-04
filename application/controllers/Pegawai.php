@@ -1,5 +1,5 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+if (! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Pegawai extends CI_Controller
 {
@@ -20,29 +20,29 @@ class Pegawai extends CI_Controller
 	public function index()
 	{
 		//User harus admin, tidak boleh role user lain
-		if($this->session->userdata('level') == "Admin"){
+		if ($this->session->userdata('level') == "Admin") {
 			//Menyusun template List pegawai
 			$data['title'] 	  = "Employee";
 			$data['navbar']   = "navbar";
 			$data['sidebar']  = "sidebar";
 			$data['body']     = "pegawai/index";
 
-	        //Session
+			//Session
 			$id_dept = $this->session->userdata('id_dept');
 			$id_user = $this->session->userdata('id_user');
 
-	        //Daftar semua pegawai, get dari model_app (pegawai), data akan ditampung dalam parameter 'pegawai'
+			//Daftar semua pegawai, get dari model_app (pegawai), data akan ditampung dalam parameter 'pegawai'
 			$data['pegawai'] = $this->model_app->pegawai()->result();
 
 			//Dropdown pilih jabatan, menggunakan model_app (dropdown_jabatan), nama pegawai ditampung pada 'dd_jabatan', data yang akan di simpan adalah id_jabatan dan akan ditampung pada 'id_jabatan'
 			$data['dd_jabatan'] = $this->model_app->dropdown_jabatan();
 			$data['id_jabatan'] = "";
 
-	        //Dropdown pilih departemen, menggunakan model_app (dropdown_departemen), nama departemen ditampung pada 'dd_departemen', data yang akan di simpan adalah id_departemen dan akan ditampung pada 'id_departemen'
+			//Dropdown pilih departemen, menggunakan model_app (dropdown_departemen), nama departemen ditampung pada 'dd_departemen', data yang akan di simpan adalah id_departemen dan akan ditampung pada 'id_departemen'
 			$data['dd_departemen'] = $this->model_app->dropdown_departemen();
 			$data['id_departemen'] = "";
 
-	        //Dropdown pilih sub departemen, menggunakan model_app (dropdown_bagian_departemen), nama departemen ditampung pada 'dd_bagian_departemen', data yang akan di simpan adalah id_bagian_departemen dan akan ditampung pada 'id_bagian_departemen'
+			//Dropdown pilih sub departemen, menggunakan model_app (dropdown_bagian_departemen), nama departemen ditampung pada 'dd_bagian_departemen', data yang akan di simpan adalah id_bagian_departemen dan akan ditampung pada 'id_bagian_departemen'
 			$data['dd_bagian_departemen'] = $this->model_app->dropdown_bagian_departemen('');
 			$data['id_bagian_departemen'] = "";
 
@@ -58,7 +58,10 @@ class Pegawai extends CI_Controller
 	public function tambah()
 	{
 		//Form validasi untuk nik dengan nama validasi = nik
-		$this->form_validation->set_rules('nik', 'Nik', 'required|is_unique[karyawan.nik]',
+		$this->form_validation->set_rules(
+			'nik',
+			'Nik',
+			'required|is_unique[karyawan.nik]',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter ID Number.
@@ -70,7 +73,10 @@ class Pegawai extends CI_Controller
 		);
 
 		//Form validasi untuk nama dengan nama validasi = nama
-		$this->form_validation->set_rules('nama', 'Nama', 'required',
+		$this->form_validation->set_rules(
+			'nama',
+			'Nama',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Name.
@@ -79,7 +85,10 @@ class Pegawai extends CI_Controller
 		);
 
 		//Form validasi untuk email dengan nama validasi = email
-		$this->form_validation->set_rules('email', 'Email', 'required',
+		$this->form_validation->set_rules(
+			'email',
+			'Email',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Email.
@@ -88,7 +97,10 @@ class Pegawai extends CI_Controller
 		);
 
 		//Form validasi untuk dropdown id_jabatan dengan nama validasi = id_jabatan
-		$this->form_validation->set_rules('id_jabatan', 'Id_jabatan', 'required',
+		$this->form_validation->set_rules(
+			'id_jabatan',
+			'Id_jabatan',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Position.
@@ -97,7 +109,10 @@ class Pegawai extends CI_Controller
 		);
 
 		//Form validasi untuk dropdown id_departemen dengan nama validasi = id_departemen
-		$this->form_validation->set_rules('id_departemen', 'Id_departemen', 'required',
+		$this->form_validation->set_rules(
+			'id_departemen',
+			'Id_departemen',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Department.
@@ -106,7 +121,10 @@ class Pegawai extends CI_Controller
 		);
 
 		//Form validasi untuk dropdown sub departemen dengan nama validasi = id_bagian_departemen
-		$this->form_validation->set_rules('id_bagian_departemen', 'Id_bagian_departemen', 'required',
+		$this->form_validation->set_rules(
+			'id_bagian_departemen',
+			'Id_bagian_departemen',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter Sub Department.
@@ -115,9 +133,9 @@ class Pegawai extends CI_Controller
 		);
 
 		//Kondisi jika proses tambah pegawai tidak memenuhi syarat validasi akan dikembalikan ke form tambah pegawai
-		if($this->form_validation->run() == FALSE){
+		if ($this->form_validation->run() == FALSE) {
 			//User harus admin, tidak boleh role user lain
-			if($this->session->userdata('level') == "Admin"){
+			if ($this->session->userdata('level') == "Admin") {
 				//Menyusun template List pegawai dengan form tambah pegawai
 				$data['title'] 	  = "Employee";
 				$data['navbar']   = "navbar";
@@ -125,22 +143,22 @@ class Pegawai extends CI_Controller
 				$data['modal_show'] = "$('#modal-fade').modal('show');";
 				$data['body']     = "pegawai/index";
 
-	        	//Session
+				//Session
 				$id_dept = $this->session->userdata('id_dept');
 				$id_user = $this->session->userdata('id_user');
 
-	        	//Daftar semua pegawai, get dari model_app (pegawai), data akan ditampung dalam parameter 'pegawai'
+				//Daftar semua pegawai, get dari model_app (pegawai), data akan ditampung dalam parameter 'pegawai'
 				$data['pegawai'] = $this->model_app->pegawai()->result();
 
 				//Dropdown pilih jabatan, menggunakan model_app (dropdown_jabatan), nama jabatan ditampung pada 'dd_jabatan', data yang akan di simpan adalah id_jabatan dan akan ditampung pada 'id_jabatan'
 				$data['dd_jabatan'] = $this->model_app->dropdown_jabatan();
 				$data['id_jabatan'] = "";
 
-	        	//Dropdown pilih departemen, menggunakan model_app (dropdown_departemen), nama departemen ditampung pada 'dd_departemen', data yang akan di simpan adalah id_departemen dan akan ditampung pada 'id_departemen'
+				//Dropdown pilih departemen, menggunakan model_app (dropdown_departemen), nama departemen ditampung pada 'dd_departemen', data yang akan di simpan adalah id_departemen dan akan ditampung pada 'id_departemen'
 				$data['dd_departemen'] = $this->model_app->dropdown_departemen();
 				$data['id_departemen'] = "";
 
-	        	//Dropdown pilih sub departemen, menggunakan model_app (dropdown_bagian_departemen), nama departemen ditampung pada 'dd_bagian_departemen', data yang akan di simpan adalah id_bagian_departemen dan akan ditampung pada 'id_bagian_departemen'
+				//Dropdown pilih sub departemen, menggunakan model_app (dropdown_bagian_departemen), nama departemen ditampung pada 'dd_bagian_departemen', data yang akan di simpan adalah id_bagian_departemen dan akan ditampung pada 'id_bagian_departemen'
 				$data['dd_bagian_departemen'] = $this->model_app->dropdown_bagian_departemen('');
 				$data['id_bagian_departemen'] = "";
 
@@ -188,14 +206,14 @@ class Pegawai extends CI_Controller
 	public function edit($id)
 	{
 		//User harus admin, tidak boleh role user lain
-		if($this->session->userdata('level') == "Admin"){
+		if ($this->session->userdata('level') == "Admin") {
 			//Menyusun template Edit pegawai
 			$data['title'] 	  = "Edit Employee";
 			$data['navbar']   = "navbar";
 			$data['sidebar']  = "sidebar";
 			$data['body']     = "pegawai/edit";
 
-	        //Session
+			//Session
 			$id_dept = $this->session->userdata('id_dept');
 			$id_user = $this->session->userdata('id_user');
 
@@ -230,7 +248,10 @@ class Pegawai extends CI_Controller
 	public function update($id)
 	{
 		//Form validasi untuk nama dengan nama validasi = nama
-		$this->form_validation->set_rules('nama', 'Nama', 'required',
+		$this->form_validation->set_rules(
+			'nama',
+			'Nama',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Name.
@@ -239,7 +260,10 @@ class Pegawai extends CI_Controller
 		);
 
 		//Form validasi untuk email dengan nama validasi = email
-		$this->form_validation->set_rules('email', 'Email', 'required',
+		$this->form_validation->set_rules(
+			'email',
+			'Email',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Email.
@@ -248,7 +272,10 @@ class Pegawai extends CI_Controller
 		);
 
 		//Form validasi untuk id_jabatan dengan nama validasi = id_jabatan
-		$this->form_validation->set_rules('id_jabatan', 'Id_jabatan', 'required',
+		$this->form_validation->set_rules(
+			'id_jabatan',
+			'Id_jabatan',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Position.
@@ -257,7 +284,10 @@ class Pegawai extends CI_Controller
 		);
 
 		//Form validasi untuk id_departemen dengan nama validasi = id_departemen
-		$this->form_validation->set_rules('id_departemen', 'Id_departemen', 'required',
+		$this->form_validation->set_rules(
+			'id_departemen',
+			'Id_departemen',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Department.
@@ -266,7 +296,10 @@ class Pegawai extends CI_Controller
 		);
 
 		//Form validasi untuk id_bagian_departemen dengan nama validasi = id_bagian_departemen
-		$this->form_validation->set_rules('id_bagian_departemen', 'Id_bagian_departemen', 'required',
+		$this->form_validation->set_rules(
+			'id_bagian_departemen',
+			'Id_bagian_departemen',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter Sub Department.
@@ -275,16 +308,16 @@ class Pegawai extends CI_Controller
 		);
 
 		//Kondisi jika saat proses update tidak memenuhi syarat validasi akan dikembalikan ke halaman edit pegawai
-		if($this->form_validation->run() == FALSE){
+		if ($this->form_validation->run() == FALSE) {
 			//User harus admin, tidak boleh role user lain
-			if($this->session->userdata('level') == "Admin"){
+			if ($this->session->userdata('level') == "Admin") {
 				//Menyusun template Edit pegawai
 				$data['title'] 	  = "Edit Employee";
 				$data['navbar']   = "navbar";
 				$data['sidebar']  = "sidebar";
 				$data['body']     = "pegawai/edit";
 
-	        	//Session
+				//Session
 				$id_dept = $this->session->userdata('id_dept');
 				$id_user = $this->session->userdata('id_user');
 
@@ -317,7 +350,7 @@ class Pegawai extends CI_Controller
 		} else {
 			//Bagian ini jika validasi dipenuhi, maka berhasil update pegawai
 			//User harus admin, tidak boleh role user lain
-			if($this->session->userdata('level') == "Admin"){
+			if ($this->session->userdata('level') == "Admin") {
 				//Data pegawai ditampung dalam bentuk array
 				$data = array(
 					'nama'           => ucfirst($this->input->post('nama')),

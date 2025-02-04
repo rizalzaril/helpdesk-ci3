@@ -15,6 +15,29 @@
 					Profile
 				</a>
 
+				<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+				<h1>Real-time Notification</h1>
+				<div id="notification"></div>
+
+				<script>
+					// Inisialisasi Pusher
+					var pusher = new Pusher('5323a31ae25a4bce6f90', {
+						cluster: 'ap1',
+						forceTLS: true
+					});
+
+					var channel = pusher.subscribe('admin-channel');
+					channel.bind('new-ticket', function(data) {
+						// Menampilkan pesan notifikasi di halaman
+						document.getElementById('notification').innerHTML = data.message;
+					});
+				</script>
+
+
+
+
+
+
 				<a class="dropdown-item" href="<?php echo site_url('User/password') ?>">
 					<i class="fas fa-key fa-sm fa-fw mr-2 text-black-100"></i>
 					Change Password

@@ -1,13 +1,19 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+
+
+if (! defined('BASEPATH')) exit('No direct script access allowed');
 
 class List_ticket_user extends CI_Controller
 {
+
+
 	public function __construct()
 	{
 		parent::__construct();
 		//Meload model_app
 		$this->load->model('model_app');
+		$this->load->library('Pusher_lib');
 
 		//Jika session tidak ditemukan
 		if (!$this->session->userdata('id_user')) {
@@ -22,14 +28,14 @@ class List_ticket_user extends CI_Controller
 	public function buat()
 	{
 		//User harus User, tidak boleh role user lain
-		if($this->session->userdata('level') == "User"){
+		if ($this->session->userdata('level') == "User") {
 			//Menyusun template Create ticket
 			$data['title'] 	  = "Create Ticket";
 			$data['navbar']   = "navbar";
 			$data['sidebar']  = "sidebar";
 			$data['body']     = "ticketUser/buatticket";
 
-	        //Session
+			//Session
 			$id_dept 	= $this->session->userdata('id_dept');
 			$id_user 	= $this->session->userdata('id_user');
 
@@ -51,6 +57,19 @@ class List_ticket_user extends CI_Controller
 			$data['dd_lokasi'] = $this->model_app->dropdown_lokasi();
 			$data['id_lokasi'] = "";
 
+			//Trigger to pusher websocket
+
+			// Data notifikasi yang akan dikirimkan
+			$dataToPush = [
+				'message' => 'A new ticket has been created by ' . $data['profile']['username'],
+				'ticket_id' => $data['ticket']
+			];
+
+			// Mengirim notifikasi ke channel 'admin-channel'
+			$this->pusher_lib->send_notification('admin-channel', 'new-ticket', $dataToPush);
+
+			// Menampilkan hasil
+			echo 'Notification sent!';
 			//Load template
 			$this->load->view('template', $data);
 		} else {
@@ -63,7 +82,10 @@ class List_ticket_user extends CI_Controller
 	public function submit()
 	{
 		//Form validasi untuk ketgori dengan nama validasi = id_kategori
-		$this->form_validation->set_rules('id_kategori', 'Id_kategori', 'required',
+		$this->form_validation->set_rules(
+			'id_kategori',
+			'Id_kategori',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Choose the Categoty.
@@ -72,7 +94,10 @@ class List_ticket_user extends CI_Controller
 		);
 
 		//Form validasi untuk sub kategori dengan nama validasi = id_sub_kategori
-		$this->form_validation->set_rules('id_sub_kategori', 'id_sub_kategori', 'required',
+		$this->form_validation->set_rules(
+			'id_sub_kategori',
+			'id_sub_kategori',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Choose the Sub Category.
@@ -81,7 +106,10 @@ class List_ticket_user extends CI_Controller
 		);
 
 		//Form validasi untuk lokasi dengan nama validasi = lokasi
-		$this->form_validation->set_rules('id_lokasi', 'Id_lokasi', 'required',
+		$this->form_validation->set_rules(
+			'id_lokasi',
+			'Id_lokasi',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Choose the Location.
@@ -90,7 +118,10 @@ class List_ticket_user extends CI_Controller
 		);
 
 		//Form validasi untuk subject dengan nama validasi = problem_summary
-		$this->form_validation->set_rules('problem_summary', 'Problem_summary', 'required',
+		$this->form_validation->set_rules(
+			'problem_summary',
+			'Problem_summary',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Subject.
@@ -99,7 +130,10 @@ class List_ticket_user extends CI_Controller
 		);
 
 		//Form validasi untuk deskripsi dengan nama validasi = problem_detail
-		$this->form_validation->set_rules('problem_detail', 'Problem_detail', 'required',
+		$this->form_validation->set_rules(
+			'problem_detail',
+			'Problem_detail',
+			'required',
 			array(
 				'required' => '<div class="alert alert-danger alert-dismissable">
 									<strong>Failed!</strong> Please Enter the Description.
@@ -108,16 +142,16 @@ class List_ticket_user extends CI_Controller
 		);
 
 		//Kondisi jika proses buat tiket tidak memenuhi syarat validasi akan dikembalikan ke form buat tiket
-		if($this->form_validation->run() == FALSE){
+		if ($this->form_validation->run() == FALSE) {
 			//User harus User, tidak boleh role user lain
-			if($this->session->userdata('level') == "User"){
+			if ($this->session->userdata('level') == "User") {
 				//Menyusun template Create ticket
 				$data['title'] 	  = "Create Ticket";
 				$data['navbar']   = "navbar";
 				$data['sidebar']  = "sidebar";
 				$data['body']     = "ticketUser/buatticket";
 
-	        	//Session
+				//Session
 				$id_dept 	= $this->session->userdata('id_dept');
 				$id_user 	= $this->session->userdata('id_user');
 
@@ -150,12 +184,12 @@ class List_ticket_user extends CI_Controller
 			//Bagian ini jika validasi dipenuhi untuk membuat ticket
 			//Data
 			$kat      = $this->input->post('id_kategori');
-            $subkat   = $this->input->post('id_sub_kategori');
-            $row      = $this->model_app->getkategeori($kat)->row();
-            $key      = $this->db->query("SELECT * FROM sub_kategori WHERE id_sub_kategori = '$subkat'")->row();
+			$subkat   = $this->input->post('id_sub_kategori');
+			$row      = $this->model_app->getkategeori($kat)->row();
+			$key      = $this->db->query("SELECT * FROM sub_kategori WHERE id_sub_kategori = '$subkat'")->row();
 			//Session
 			$id_user 	= $this->session->userdata('id_user');
-			
+
 			//Get kode ticket yang akan digunakan sebagai id_ticket menggunakan model_app(getkodeticket)
 			$ticket 	= $this->model_app->getkodeticket();
 			$date       = date("Y-m-d  H:i:s");
@@ -191,11 +225,11 @@ class List_ticket_user extends CI_Controller
 				);
 
 
-	        	//Data tracking ditampung dalam bentuk array
+				//Data tracking ditampung dalam bentuk array
 				$datatracking = array(
 					'id_ticket'  => $ticket,
 					'tanggal'    => date("Y-m-d  H:i:s"),
-					'status'     => "Ticket Submited. Category: ".$row->nama_kategori."(".$key->nama_sub_kategori.")",
+					'status'     => "Ticket Submited. Category: " . $row->nama_kategori . "(" . $key->nama_sub_kategori . ")",
 					'deskripsi'  => ucfirst($this->input->post('problem_detail')),
 					'id_user'    => $id_user
 				);
@@ -216,19 +250,19 @@ class List_ticket_user extends CI_Controller
 		}
 	}
 
-/////////////////////////////////////////////////////////////////////////////My Ticket/////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////My Ticket/////////////////////////////////////////////////////////////////////////////
 
 	public function index()
 	{
 		//User harus User, tidak boleh role user lain
-		if($this->session->userdata('level') == "User"){
+		if ($this->session->userdata('level') == "User") {
 			//Menyusun template My Ticket
 			$data['title'] 	  = "List Your Ticket";
 			$data['navbar']   = "navbar";
 			$data['sidebar']  = "sidebar";
 			$data['body']     = "ticketUser/listticket";
 
-	        //Session
+			//Session
 			$id_dept 	= $this->session->userdata('id_dept');
 			$id_user 	= $this->session->userdata('id_user');
 
@@ -247,21 +281,21 @@ class List_ticket_user extends CI_Controller
 	public function detail($id)
 	{
 		//User harus User, tidak boleh role user lain
-		if($this->session->userdata('level') == "User"){
+		if ($this->session->userdata('level') == "User") {
 			//Menyusun template Detail Ticket
 			$data['title'] 	  = "Detail Your Ticket";
 			$data['navbar']   = "navbar";
 			$data['sidebar']  = "sidebar";
 			$data['body']     = "ticketUser/detail";
 
-	        //Session
+			//Session
 			$id_dept 	= $this->session->userdata('id_dept');
 			$id_user 	= $this->session->userdata('id_user');
 
 			//Detail setiap tiket, get dari model_app (detail_ticket) berdasarkan id_ticket, data akan ditampung dalam parameter 'detail'
 			$data['detail'] = $this->model_app->detail_ticket($id)->row_array();
 
-	        //Tracking setiap tiket, get dari model_app (tracking_ticket) berdasarkan id_ticket, data akan ditampung dalam parameter 'tracking'
+			//Tracking setiap tiket, get dari model_app (tracking_ticket) berdasarkan id_ticket, data akan ditampung dalam parameter 'tracking'
 			$data['tracking'] = $this->model_app->tracking_ticket($id)->result();
 
 			//Load template

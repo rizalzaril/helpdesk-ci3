@@ -56,6 +56,14 @@
 			</div>
 		</li>
 
+
+
+		<!-- Tempat untuk menampilkan notifikasi -->
+		<ul id="notif-list"></ul>
+
+
+
+
 		<!-- Divider -->
 		<hr class="sidebar-divider">
 		<!-- Nav Item - Pages Collapse Menu -->
